@@ -20,17 +20,14 @@ def preprossing(image):
     image_arr.shape = (1, 240, 240, 3)
     return image_arr
 def model_predict(img_path, model):
-    img = image.load_img(img_path,target_size=(240, 240))  # target_size must agree with what the trained model expects!!
+    img = Image.open(img_path).convert('RGB')
+    img = img.resize((240, 240))
+    img_array = np.array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = img_array.astype('float32') / 255
 
-    # Preprocessing the image
-    img = image.img_to_array(img)
-    img = np.expand_dims(img, axis=0)
-    img = img.astype('float32') / 255
-
-    preds = model.predict(img)
-    print(preds)
+    preds = model.predict(img_array)
     pred = np.floor(preds)
-    print(pred)
     return pred
 #classes = ['does not have a tumor', 'have a tumor']
 #model = load_model("besttransfermodel.h5")
